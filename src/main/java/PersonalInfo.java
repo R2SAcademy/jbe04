@@ -3,17 +3,18 @@ import java.util.Scanner;
 public class PersonalInfo {
 
   public static void main(String[] args) {
-    String name;
-    int age;
+    String name = null; // default value
+    int age ;
 
     // input
     Scanner scanner = new Scanner(System.in);
 
+    System.out.print("Enter your age: ");
+//    age = scanner.nextLine(); // convert input to int
+    age = Integer.parseInt(scanner.nextLine());
+
     System.out.print("Enter your name: ");
     name = scanner.nextLine();
-
-    System.out.print("Enter your age: ");
-    age = scanner.nextInt();
 
     // output
     System.out.println("Hello " + name + ", you are " + age + " years old.");
