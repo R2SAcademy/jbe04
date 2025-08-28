@@ -1,8 +1,8 @@
-package form;
+package project.form;
 
-import entity.Brand;
-import util.ScannerUtil;
-import util.ValidationUtil;
+import project.entity.Brand;
+import project.util.ScannerUtil;
+import project.util.ValidationUtil;
 
 public class BrandForm {
 

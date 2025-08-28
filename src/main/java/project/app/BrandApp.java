@@ -1,12 +1,12 @@
-package app;
+package project.app;
 
-import dao.BrandDAO;
-import dao.BrandDAOImpl;
-import entity.Brand;
-import exception.DAOException;
-import exception.GlobalExceptionHandler;
-import form.BrandForm;
-import util.Constants;
+import project.dao.BrandDAO;
+import project.dao.BrandDAOImpl;
+import project.entity.Brand;
+import project.exception.DAOException;
+import project.exception.GlobalExceptionHandler;
+import project.form.BrandForm;
+import project.util.Constants;
 
 import java.util.List;
 import java.util.Scanner;

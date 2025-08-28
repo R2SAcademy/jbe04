@@ -1,4 +1,4 @@
-package util;
+package project.util;
 
 public class Constants {
     public static final String BRAND_HEADER = String.format("%-10s | %-30s", "Brand ID", "Brand Name");

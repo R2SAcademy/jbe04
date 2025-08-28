@@ -1,12 +1,12 @@
-package dao;
+package project.dao;
 
-import entity.Brand;
-import exception.DAOException;
-import util.JDBCUtil;
+import project.entity.Brand;
+import project.exception.DAOException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import project.util.JDBCUtil;
 
 public class BrandDAOImpl implements BrandDAO {
 

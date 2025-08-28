@@ -1,4 +1,4 @@
-package entity;
+package project.entity;
 
 public class Brand {
     private int brandId;

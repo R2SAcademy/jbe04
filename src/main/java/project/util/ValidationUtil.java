@@ -1,4 +1,4 @@
-package util;
+package project.util;
 
 public class ValidationUtil {
     public static boolean isValidString(String input) {

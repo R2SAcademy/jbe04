@@ -1,7 +1,7 @@
-package dao;
+package project.dao;
 
-import entity.Brand;
-import exception.DAOException;
+import project.entity.Brand;
+import project.exception.DAOException;
 import java.util.List;
 
 public interface BrandDAO {

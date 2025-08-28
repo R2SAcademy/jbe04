@@ -1,6 +1,6 @@
-package app;
+package project.app;
 
-import static util.ScannerUtil.readInt;
+import static project.util.ScannerUtil.readInt;
 
 public class DashboardUI {
 
