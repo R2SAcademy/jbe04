@@ -81,6 +81,7 @@ public class DashboardUI {
 
     private void handleCartPayment() {
         System.out.println("\nNavigating to Cart & Payment Module...");
+        CartApp.run();
     }
 
     private void handleShippingReview() {
