@@ -8,7 +8,7 @@ public class JDBCUtil {
     public static Connection getConnection() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/bikestores";
         String user = "root";
-        String password = "meoconsieucapvutruhuydietsieutantinhchivoi1caibungtay";
+        String password = "Passw0rd";
         return DriverManager.getConnection(url, user, password);
     }
 }

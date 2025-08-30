@@ -69,7 +69,6 @@ public class DashboardUI {
 
     private void handleProductStock() {
         System.out.println("\nNavigating to Product & Stock Module...");
-        ProductStockApp.run();
     }
 
     private void handleReports() {
