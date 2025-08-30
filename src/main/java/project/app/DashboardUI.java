@@ -1,5 +1,9 @@
 package project.app;
 
+
+
+import java.util.Scanner;
+
 import static project.util.ScannerUtil.readInt;
 
 public class DashboardUI {
@@ -88,6 +92,35 @@ public class DashboardUI {
     }
 
     private void handleWishlistDiscount() {
-        System.out.println("\nNavigating to Wishlist & Discount Module...");
+       /* System.out.println("\nNavigating to Wishlist & Discount Module...");
+        WishlistApp.run();
+        DiscountApp.run();*/
+
+        Scanner scanner = new Scanner(System.in);
+        int choice = -1;
+        do {
+            System.out.println("\n===== WISHLIST & DISCOUNT MODULE =====");
+            System.out.println("1. Wishlist");
+            System.out.println("2. Discount");
+            System.out.println("0. Back to main menu");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+            try {
+                choice = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                continue;
+            }
+
+            switch (choice) {
+                case 1 -> WishlistApp.run();
+                case 2 -> DiscountApp.run();
+                case 0 -> System.out.println("Returning to Main Menu...");
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        } while (choice != 0);
+
     }
+
 }
