@@ -73,6 +73,7 @@ public class DashboardUI {
 
     private void handleReports() {
         System.out.println("\nNavigating to Reports / Stats Module...");
+        ReportsAndStatisticsApp.run();
     }
 
     private void handleUserAuth() {
