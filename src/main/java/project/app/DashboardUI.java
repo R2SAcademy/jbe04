@@ -93,12 +93,13 @@ public class DashboardUI {
             switch (choice) {
 
                 case REGISTER -> {
-                    project.form.RegisterForm uf = new project.form.RegisterForm();
-                    uf.register();
+                    project.form.RegisterForm rf = new project.form.RegisterForm();
+                    rf.register();
                 }
 
                 case LOGIN -> {
-                    System.out.println("\nLogin ");
+                    project.form.LoginForm lf = new project.form.LoginForm();
+                    lf.login();
                 }
 
                 case BACK -> System.out.println("Returning to Dashboard...");

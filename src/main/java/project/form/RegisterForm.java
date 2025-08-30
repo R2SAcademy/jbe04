@@ -16,6 +16,7 @@ public class RegisterForm {
         try {
             String username = ScannerUtil.readString("Enter username: ");
             String password = ScannerUtil.readString("Enter password: ");
+            String confirmPassword = ScannerUtil.readString("Confirm password: ");
             String role = ScannerUtil.readString("Enter role (admin/user): ");
 
             if (!ValidationUtil.isValidUsername(username)) {
@@ -30,6 +31,11 @@ public class RegisterForm {
 
             if (role == null || role.trim().isEmpty()) {
                 role = "user";
+            }
+
+            if (!password.equals(confirmPassword)) {
+                System.out.println("Passwords do not match. Please try again.");
+                return;
             }
 
             String passwordHash = SecurityUtil.hashPassword(password);
