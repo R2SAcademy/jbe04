@@ -102,7 +102,7 @@ public class ShipmentReviewApp {
                     case 6 -> {
                         Reviews review = ReviewsForm.inputReview();
                         boolean ok = reviewsDAO.create(review);
-                        System.out.println(ok ? "✅ Created." : "⚠ Already reviewed this product.");
+                        System.out.println(ok ? "Created." : "Already reviewed this product.");
                     }
 
                     case 7 -> {

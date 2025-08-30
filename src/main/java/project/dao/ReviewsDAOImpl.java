@@ -40,21 +40,6 @@ public class ReviewsDAOImpl implements ReviewsDAO {
     }
 
     @Override
-    public boolean existsByCustomerAndProduct(int customerId, int productId) throws DAOException {
-        final String sql = "SELECT 1 FROM reviews WHERE customer_id=? AND product_id=? LIMIT 1";
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, customerId);
-            ps.setInt(2, productId);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        } catch (SQLException e) {
-            throw new DAOException("existsByCustomerAndProduct failed", e);
-        }
-    }
-
-    @Override
     public List<Reviews> findByProductId(int productId) throws DAOException {
         final String sql = "SELECT review_id, customer_id, product_id, rating, comment, review_date " +
                 "FROM reviews WHERE product_id=? ORDER BY review_date DESC";
@@ -79,21 +64,6 @@ public class ReviewsDAOImpl implements ReviewsDAO {
             throw new DAOException("findByProductId failed", e);
         }
         return list;
-    }
-
-    @Override
-    public Double getAverageRatingByProductId(int productId) throws DAOException {
-        final String sql = "SELECT AVG(rating) AS avg_rating FROM reviews WHERE product_id=?";
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, productId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getDouble("avg_rating");
-            }
-        } catch (SQLException e) {
-            throw new DAOException("getAverageRatingByProductId failed", e);
-        }
-        return null;
     }
 
     @Override
