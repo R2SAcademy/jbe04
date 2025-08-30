@@ -1,6 +1,7 @@
 package project.app;
 
 import static project.util.ScannerUtil.readInt;
+import static project.util.ScannerUtil.readString;
 
 public class DashboardUI {
 
@@ -76,7 +77,36 @@ public class DashboardUI {
     }
 
     private void handleUserAuth() {
-        System.out.println("\nNavigating to Authentication Module...");
+        String choice;
+        final String REGISTER = "1";
+        final String LOGIN = "2";
+        final String BACK = "0";
+
+        do {
+            System.out.println("\n=== USER AUTHENTICATION ===");
+            System.out.println("1. Register User");
+            System.out.println("2. Login User");
+            System.out.println("0. Back to Main Menu");
+
+            choice = readString("Enter your choice: ");
+
+            switch (choice) {
+
+                case REGISTER -> {
+                    project.form.RegisterForm rf = new project.form.RegisterForm();
+                    rf.register();
+                }
+
+                case LOGIN -> {
+                    project.form.LoginForm lf = new project.form.LoginForm();
+                    lf.login();
+                }
+
+                case BACK -> System.out.println("Returning to Dashboard...");
+
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        } while (!choice.equals(BACK));
     }
 
     private void handleCartPayment() {
