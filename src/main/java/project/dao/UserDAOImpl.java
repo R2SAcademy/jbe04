@@ -11,21 +11,35 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void insert(User user) throws DAOException {
-        String sql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
-        try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String checkSql = "SELECT COUNT(*) FROM users WHERE username = ?";
+        String insertSql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
 
-            int index =1;
-            ps.setString(index++, user.getUsername());
-            ps.setString(index++, user.getPasswordHash());
-            ps.setString(index++, user.getRole());
+        try (Connection conn = JDBCUtil.getConnection()) {
 
-            ps.executeUpdate();
+            //Check username
+            try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+                psCheck.setString(1, user.getUsername());
+                ResultSet rs = psCheck.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    throw new DAOException("Username already exists", null);
+                }
+            }
+
+            //không trung -> insert user
+            try (PreparedStatement psInsert = conn.prepareStatement(insertSql)) {
+                int index = 1;
+                psInsert.setString(index++, user.getUsername());
+                psInsert.setString(index++, user.getPasswordHash());
+                psInsert.setString(index++, user.getRole());
+
+                psInsert.executeUpdate();
+            }
 
         } catch (SQLException e) {
             throw new DAOException("Failed to insert user", e);
         }
     }
+
 
     @Override
     public Optional<User> findByUsername(String username) throws DAOException {
@@ -36,8 +50,10 @@ public class UserDAOImpl implements UserDAO {
 
             int index =1;
             ps.setString(index, username);
+
             ResultSet rs = ps.executeQuery();
 
+            //kiem tra du lieu
             if (rs.next()) {
                 User user = new User(
                         rs.getInt("user_id"),
