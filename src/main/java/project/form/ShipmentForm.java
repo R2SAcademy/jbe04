@@ -9,10 +9,12 @@ import java.util.Scanner;
 public class ShipmentForm {
     public static Shipment inputShipment() {
         Shipment shipment = new Shipment();
+
         shipment.setOrderId(ScannerUtil.readNonNegativeInt("Enter order id: "));
         shipment.setCarrier(ScannerUtil.readNonEmptyString("Enter carrier: "));
         shipment.setTrackingNumber("GNH" + System.currentTimeMillis());
         shipment.setShippedDate(ScannerUtil.inputNonPastDate("Enter shipping day: "));
+
         return shipment;
     }
 
