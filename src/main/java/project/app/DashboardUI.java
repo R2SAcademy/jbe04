@@ -84,7 +84,8 @@ public class DashboardUI {
     }
 
     private void handleShippingReview() {
-        System.out.println("\nNavigating to Shipping & Review Module...");
+        System.out.println("\n");
+        ShipmentReviewApp.run();
     }
 
     private void handleWishlistDiscount() {
