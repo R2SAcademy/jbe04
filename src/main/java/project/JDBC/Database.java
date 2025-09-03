@@ -9,7 +9,8 @@ public final class Database {
     private static final String USER = "root";
     private static final String PASS = "2991";
 
-    private Database() {}
+    private Database() {
+    }
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);

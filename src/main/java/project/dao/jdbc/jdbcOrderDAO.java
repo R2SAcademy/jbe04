@@ -7,141 +7,188 @@ import project.exception.DAOException;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class jdbcOrderDAO implements OrderDAO {
-    private final Connection connection;
+    private final Connection conn;
 
-    public jdbcOrderDAO(Connection connection) {
-        this.connection = connection;
-    }
-
-    private static Date sqlDate(LocalDate d, LocalDate fallback) {
-        return Date.valueOf(d != null ? d : fallback);
-    }
-    private static void setNullableInt(PreparedStatement ps, int idx, Integer v) throws SQLException {
-        if (v == null) ps.setNull(idx, Types.INTEGER); else ps.setInt(idx, v);
-    }
-    private static void setEnum(PreparedStatement ps, int idx, OrderStatus st, OrderStatus def) throws SQLException {
-        ps.setString(idx, (st != null ? st : def).name());
-    }
-    private Order map(ResultSet rs) throws SQLException {
-        Order o = new Order();
-        o.setId(rs.getInt("order_id"));                         // <-- dùng setId
-        o.setCustomerId(rs.getInt("customer_id"));
-        Date d = rs.getDate("order_date");
-        o.setOrderDate(d == null ? null : d.toLocalDate());
-        Object disc = rs.getObject("discount_id");
-        o.setDiscountId(disc == null ? null : (Integer) disc);
-        String st = rs.getString("status");
-        o.setStatus(st == null ? null : OrderStatus.valueOf(st));
-        o.setTotalAmount(rs.getBigDecimal("total_amount"));
-        return o;
-    }
-
-    private void bindCommon(PreparedStatement ps, Order o, boolean forInsert) throws SQLException {
-        ps.setInt(1, o.getCustomerId());
-        ps.setDate(2, forInsert ? sqlDate(o.getOrderDate(), LocalDate.now())
-                : (o.getOrderDate() == null ? null : Date.valueOf(o.getOrderDate())));
-        setNullableInt(ps, 3, o.getDiscountId());
-        setEnum(ps, 4, o.getStatus(), OrderStatus.PENDING);
-        ps.setBigDecimal(5, o.getTotalAmount() == null ? BigDecimal.ZERO : o.getTotalAmount());
+    public jdbcOrderDAO(Connection conn) {
+        this.conn = conn;
     }
 
     @Override
     public Order insert(Order order) throws DAOException {
-        final String sql = """
-            INSERT INTO orders (customer_id, order_date, discount_id, status, total_amount)
-            VALUES (?,?,?,?,?)
-            """;
-        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            bindCommon(ps, order, true);
+        String sql = "INSERT INTO orders (customer_id, order_date, status, discount_id, total_amount) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, order.getCustomerId());
+            ps.setDate(2, Date.valueOf(order.getOrderDate()));
+            ps.setInt(3, order.getStatus().getCode());
+
+            if (order.getDiscountId() != null) {
+                ps.setInt(4, order.getDiscountId());
+            } else {
+                ps.setNull(4, Types.INTEGER);
+            }
+            ps.setBigDecimal(5, order.getTotalAmount());
+
             ps.executeUpdate();
-            try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) order.setId(keys.getInt(1));    // <-- setId
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    order.setId(rs.getInt(1));
+                }
             }
             return order;
         } catch (SQLException e) {
-            throw new DAOException("Insert order failed", e);
+            throw new DAOException("Error inserting order", e);
         }
     }
 
     @Override
     public boolean update(Order order) throws DAOException {
-        final String sql = """
-        UPDATE orders 
-        SET customer_id=?, order_date=?, discount_id=?, status=?, total_amount=? 
-        WHERE order_id=?
-        """;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            bindCommon(ps, order, false);
+        String sql = "UPDATE orders SET customer_id=?, order_date=?, status=?, discount_id=?, total_amount=? " +
+                "WHERE order_id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, order.getCustomerId());
+            ps.setDate(2, Date.valueOf(order.getOrderDate()));
+            ps.setInt(3, order.getStatus().getCode());
+
+            if (order.getDiscountId() != null) {
+                ps.setInt(4, order.getDiscountId());
+            } else {
+                ps.setNull(4, Types.INTEGER);
+            }
+            ps.setBigDecimal(5, order.getTotalAmount());
             ps.setInt(6, order.getId());
-            int rows = ps.executeUpdate();
-            return rows > 0;
+
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DAOException("Update order failed", e);
+            throw new DAOException("Error updating order", e);
         }
     }
 
     @Override
     public boolean delete(int orderId) throws DAOException {
-        final String sql = "DELETE FROM orders WHERE order_id=?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        String sql = "DELETE FROM orders WHERE order_id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderId);
-            int rows = ps.executeUpdate();
-            return rows > 0;
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DAOException("Delete order failed", e);
+            throw new DAOException("Error deleting order", e);
         }
     }
 
     @Override
     public Optional<Order> findById(int orderId) throws DAOException {
-
-        final String sql = "SELECT * FROM orders WHERE order_id=?";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        String sql = "SELECT * FROM orders WHERE order_id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderId);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? Optional.of(map(rs)) : Optional.empty();
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
             }
+            return Optional.empty();
         } catch (SQLException e) {
-            throw new DAOException("Find order failed", e);
+            throw new DAOException("Error finding order by id", e);
         }
     }
 
     @Override
     public List<Order> findAll() throws DAOException {
-        final String sql = "SELECT * FROM orders ORDER BY order_id DESC";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        String sql = "SELECT * FROM orders";
+        try (Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
             List<Order> list = new ArrayList<>();
-            while (rs.next()) list.add(map(rs));
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
             return list;
-
         } catch (SQLException e) {
-            throw new DAOException("List orders failed", e);
+            throw new DAOException("Error finding all orders", e);
         }
     }
 
     @Override
-    public List<Order> findByCustomerId(int customerId) throws DAOException {
-        final String sql = "SELECT * FROM orders WHERE customer_id=? ORDER BY order_id DESC";
+    public List<Order> filter(Integer customerId, OrderStatus status,
+                              String startDate, String endDate) throws DAOException {
+        StringBuilder sql = new StringBuilder("SELECT * FROM orders WHERE 1=1");
+        List<Object> params = new ArrayList<>();
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, customerId);
+        if (customerId != null) {
+            sql.append(" AND customer_id=?");
+            params.add(customerId);
+        }
+        if (status != null) {
+            sql.append(" AND status=?");
+            params.add(status.getCode());
+        }
+        if (startDate != null) {
+            sql.append(" AND order_date>=?");
+            params.add(Date.valueOf(startDate));
+        }
+        if (endDate != null) {
+            sql.append(" AND order_date<=?");
+            params.add(Date.valueOf(endDate));
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
             try (ResultSet rs = ps.executeQuery()) {
                 List<Order> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
                 return list;
             }
-
         } catch (SQLException e) {
-            throw new DAOException("List orders by customer failed", e);
+            throw new DAOException("Error filtering orders", e);
         }
+    }
+
+    @Override
+    public BigDecimal getDiscountPercentage(Integer discountId) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getDiscountPercentage(int discountId) throws DAOException {
+        String sql = "SELECT percentage FROM discounts WHERE discount_id=? AND (expires_at IS NULL OR expires_at >= CURDATE())";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, discountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return BigDecimal.valueOf(rs.getInt("percentage"));
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DAOException("Error fetching discount percentage", e);
+        }
+    }
+
+    @Override
+    public void recalcAllOrders() {
+    }
+
+
+    private Order mapRow(ResultSet rs) throws SQLException {
+        Order order = new Order();
+        order.setId(rs.getInt("order_id"));
+        order.setCustomerId(rs.getInt("customer_id"));
+        order.setOrderDate(rs.getDate("order_date").toLocalDate());
+        order.setStatus(OrderStatus.fromCode(rs.getInt("status")));
+        int discountId = rs.getInt("discount_id");
+
+        if (!rs.wasNull()) {
+            order.setDiscountId(discountId);
+        }
+        order.setTotalAmount(rs.getBigDecimal("total_amount"));
+        return order;
     }
 }

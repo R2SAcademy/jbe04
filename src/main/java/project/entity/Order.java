@@ -4,18 +4,17 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Order {
-    private Integer id;
+    private int id;
     private int customerId;
     private LocalDate orderDate;
-    private Integer discountId;
-    private OrderStatus status;          // enum tránh lỗi string
-    private BigDecimal totalAmount;
+    private OrderStatus status;
+    private Integer discountId;      // optional
+    private BigDecimal totalAmount;  // auto calculated
 
     public Order() {
-
     }
 
-    public Order(Integer id, int customerId, LocalDate orderDate,
+    public Order(int id, int customerId, LocalDate orderDate,
                  OrderStatus status, Integer discountId, BigDecimal totalAmount) {
         this.id = id;
         this.customerId = customerId;
@@ -25,27 +24,53 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    // Getters & setters
+    public int getId() {
+        return id;
+    }
 
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public LocalDate getOrderDate() { return orderDate; }
-    public void setOrderDate(LocalDate orderDate) { this.orderDate = orderDate; }
+    public int getCustomerId() {
+        return customerId;
+    }
 
-    public Integer getDiscountId() { return discountId; }
-    public void setDiscountId(Integer discountId) { this.discountId = discountId; }
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
 
     public OrderStatus getStatus() {
         return status;
     }
+
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
-    public BigDecimal getTotalAmount() { return totalAmount; }
-    public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
+    public Integer getDiscountId() {
+        return discountId;
+    }
+
+    public void setDiscountId(Integer discountId) {
+        this.discountId = discountId;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount; }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
     @Override
     public String toString() {

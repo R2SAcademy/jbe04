@@ -1,15 +1,15 @@
 package project.entity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 public class OrderItem {
     private int orderId;
     private int productId;
     private int quantity;
-    private BigDecimal price;
+    private BigDecimal price; // unit price at time of purchase
 
     public OrderItem() {
+
     }
 
     public OrderItem(int orderId, int productId, int quantity, BigDecimal price) {
@@ -19,58 +19,59 @@ public class OrderItem {
         this.price = price;
     }
 
+    private String productName;
+
+    public OrderItem(int productId, int quantity, Object o) {
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    // Getters & setters
     public int getOrderId() {
-        return orderId; }
+        return orderId;
+    }
 
     public void setOrderId(int orderId) {
-        this.orderId = orderId; }
+        this.orderId = orderId;
+    }
 
     public int getProductId() {
-        return productId; }
+        return productId;
+    }
 
     public void setProductId(int productId) {
-        this.productId = productId; }
+        this.productId = productId;
+    }
 
     public int getQuantity() {
-        return quantity; }
+        return quantity;
+    }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity; }
+        this.quantity = quantity;
+    }
 
     public BigDecimal getPrice() {
-        return price; }
+        return price;
+    }
 
     public void setPrice(BigDecimal price) {
-        this.price = price; }
-
-    public BigDecimal lineTotal() {
-        return price.multiply(BigDecimal.valueOf(quantity)); }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-
-        if (!(o instanceof OrderItem that))
-            return false;
-
-        return orderId == that.orderId && productId == that.productId;
+        this.price = price;
     }
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderId, productId); }
 
     @Override
     public String toString() {
         return "OrderItem{" +
                 "orderId=" + orderId +
                 ", productId=" + productId +
-                ", qty=" + quantity +
+                ", quantity=" + quantity +
                 ", price=" + price +
-                ", lineTotal=" + lineTotal() +
                 '}';
-    }
-
-    public void setOrderItemId(int orderItemId) {
     }
 }
