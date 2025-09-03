@@ -176,7 +176,6 @@ public class jdbcOrderDAO implements OrderDAO {
     public void recalcAllOrders() {
     }
 
-
     private Order mapRow(ResultSet rs) throws SQLException {
         Order order = new Order();
         order.setId(rs.getInt("order_id"));

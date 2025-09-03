@@ -33,7 +33,7 @@ public class jdbcOrderItemDAO implements OrderItemDAO {
                 }
             }
 
-            // 2. Kiểm tra tồn tại (order_id, product_id)
+            // 2. Kiểm tra tồn tại của (order_id, product_id)
             String sqlCheck = "SELECT quantity FROM order_items WHERE order_id=? AND product_id=?";
             try (PreparedStatement ps = conn.prepareStatement(sqlCheck)) {
                 ps.setInt(1, item.getOrderId());

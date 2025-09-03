@@ -1,6 +1,7 @@
 package project.entity;
 
 public enum OrderStatus {
+
     PENDING(1),
     CONFIRMED(2),
     SHIPPED(3),

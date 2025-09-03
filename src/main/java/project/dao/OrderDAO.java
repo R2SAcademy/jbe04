@@ -19,7 +19,7 @@ public interface OrderDAO {
 
     List<Order> findAll() throws DAOException;
 
-    // optional filter
+    // filter
     List<Order> filter(Integer customerId, OrderStatus status,
                        String startDate, String endDate) throws DAOException;
 

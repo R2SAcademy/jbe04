@@ -24,7 +24,6 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    // Getters & setters
     public int getId() {
         return id;
     }

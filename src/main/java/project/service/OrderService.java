@@ -20,7 +20,7 @@ public class OrderService {
         this.itemDAO = itemDAO;
     }
 
-    // ========= ORDER ========
+    // ======= ORDER ======
     /** Create new order (with optional items) */
     public Order createOrder(Order order, List<OrderItem> items) throws DAOException {
         Order saved = orderDAO.insert(order);
@@ -81,7 +81,7 @@ public class OrderService {
         return orderDAO.delete(orderId);
     }
 
-    //========= ORDER ITEM =========
+    //======= ORDER ITEM =======
 
     /** Add item into an order */
     public void addItemToOrder(int orderId, OrderItem item) throws DAOException {
@@ -122,7 +122,7 @@ public class OrderService {
         return itemDAO.findAllByOrder(orderId);
     }
 
-    // ========= HELPER =========
+    // ======== HELPER ========
 
     /** Tính lại tổng tiền ( bao gồm cả discount ) */
     private void recalcOrderTotal(int orderId) throws DAOException {
@@ -156,5 +156,4 @@ public class OrderService {
     public void refreshAllTotals() throws DAOException {
         orderDAO.recalcAllOrders();
     }
-
 }

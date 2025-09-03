@@ -238,7 +238,7 @@ public class OrderApp {
         }
     }
 
-    // ========== Helpers ==========
+    // ========= Helpers =========
 
     private static int readInt(Scanner sc) {
         while (true) {

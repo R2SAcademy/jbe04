@@ -32,7 +32,6 @@ public class OrderItem {
         this.productName = productName;
     }
 
-    // Getters & setters
     public int getOrderId() {
         return orderId;
     }
