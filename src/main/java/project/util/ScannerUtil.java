@@ -25,4 +25,11 @@ public class ScannerUtil {
             System.out.println("⚠️ Input cannot be empty.");
         }
     }
+
+    public static String readString(String message) {
+        System.out.print(message);
+        return scanner.nextLine().trim();
+    }
+
+
 }
